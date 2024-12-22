@@ -98,27 +98,8 @@ Add metrics monitoring for Redis and Flask using tools like Prometheus and Grafa
 Expand caching strategies for hierarchical or region-based cache partitioning.
 
 
----
 
-### **What to Add to GitHub**
-1. **README.md**:
-   - Replace the current README file with the updated content above.
 
-2. **Performance Testing Results**:
-   - Add your `load_test.py` script to the repository.
-   - Create a directory named `benchmarks/` and include the results (e.g., `before_optimization.txt` and `after_optimization.txt`) for reference.
 
-3. **Gunicorn Configuration**:
-   - If you used a specific Gunicorn configuration, add it to the repo (e.g., `gunicorn_config.py`).
 
-4. **Updated app.py**:
-   - Ensure the repository includes the latest `app.py` with Redis integration and Gunicorn-ready configuration.
 
----
-
-### **Next Steps**
-- Commit the changes to your GitHub repository.
-- Add the new benchmark results to the repository.
-- Test the updated README instructions by cloning the repo and following the steps to ensure everything works smoothly.
-
-Let me know if you’d like any help updating GitHub or reviewing your README again! 🚀
