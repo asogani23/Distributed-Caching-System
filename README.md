@@ -97,7 +97,8 @@ Future Work
 Add metrics monitoring for Redis and Flask using tools like Prometheus and Grafana.
 Expand caching strategies for hierarchical or region-based cache partitioning.
 
-
+Contributing
+Contributions are welcome! Please fork the repository and submit a pull request for review.
 
 
 
