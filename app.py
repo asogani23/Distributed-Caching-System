@@ -1,10 +1,7 @@
-from flask import Flask, request, jsonify
-import redis
-
 app = Flask(__name__)
 
 # Connect to Redis
-redis_client = redis.StrictRedis(host='localhost', port=6379, decode_responses=True)
+redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
 
 @app.route('/cache', methods=['POST'])
 def set_cache():
@@ -26,4 +23,3 @@ def get_cache(key):
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
-
