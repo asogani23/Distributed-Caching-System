@@ -1,4 +1,4 @@
-#README.md Content
+README.md Content
 Title
 Distributed Caching System
 Overview
