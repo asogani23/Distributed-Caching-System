@@ -1,16 +1,15 @@
-version: '3.8'
 services:
   redis:
-    image: redis:latest
-    container_name: redis-server
+    image: redis:alpine
+    container_name: distributed_caching_system-redis-1
     ports:
       - "6379:6379"
+
   app:
     build:
       context: .
-    container_name: flask-app
+    container_name: distributed_caching_system-app-1
     ports:
       - "5000:5000"
     depends_on:
       - redis
-
