@@ -1,4 +1,4 @@
-  GNU nano 7.2                                           Dockerfile                                                     # Use an official Python runtime as the base image
+ # Use an official Python runtime as the base image
 FROM python:3.9-slim
 
 # Set the working directory
