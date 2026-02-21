@@ -16,13 +16,7 @@ A production-style distributed caching service with:
 - Three Redis instances (`redis-1`, `redis-2`, `redis-3`) serve as distributed cache shards.
 - `load_test.py` performs concurrent mixed read/write load testing and reports p50/p95/p99 latency.
 
-### Why this is stronger for SWE recruiting
 
-This project now demonstrates:
-- **Systems-level C programming** integrated into a higher-level service,
-- **Distributed systems concepts** (sharding, deterministic routing, fault visibility),
-- **Backend production practices** (Gunicorn, health checks, metrics endpoints),
-- **Performance mindset** (latency distribution, not just average latency).
 
 ---
 
