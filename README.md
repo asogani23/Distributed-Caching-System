@@ -1,106 +1,106 @@
-# Distributed Caching System
+# Distributed Caching System (C + Python + Redis)
 
-## Overview
-This project implements a **distributed caching system** using **Flask** for the API layer and **Redis** for the caching backend. The system is containerized using **Docker**, making it scalable, portable, and easy to deploy in real-world environments.
-
----
-
-## Key Features
-- **Containerized Deployment**:
-  The entire application runs inside Docker containers, ensuring consistency across environments.
-- **Redis Integration**:
-  Redis acts as the backend caching system, enabling low-latency data access.
-- **RESTful API**:
-  Provides endpoints for setting and retrieving cached key-value pairs.
-- **Scalability**:
-  Docker Compose allows seamless scaling of the app and Redis containers.
-- **Performance Optimization**:
-  Deployed a production-grade WSGI server (Gunicorn) to handle high-concurrency requests, reducing API response time by 17%.
+A production-style distributed caching service with:
+- **C-powered consistent hashing** (Jump Hash + FNV-1a) for stable shard routing,
+- **Flask API + Gunicorn** for scalable HTTP serving,
+- **Redis sharding** across multiple nodes,
+- **Operational endpoints** for health + stats,
+- **Docker Compose orchestration** for local distributed deployment.
 
 ---
 
-## Setup Instructions
+## Architecture
 
-### Clone the Repository
+- `app.py` exposes API endpoints and orchestrates cache operations.
+- `hash_ring.c` provides high-performance native shard selection via a compiled shared library.
+- Three Redis instances (`redis-1`, `redis-2`, `redis-3`) serve as distributed cache shards.
+- `load_test.py` performs concurrent mixed read/write load testing and reports p50/p95/p99 latency.
+
+### Why this is stronger for SWE recruiting
+
+This project now demonstrates:
+- **Systems-level C programming** integrated into a higher-level service,
+- **Distributed systems concepts** (sharding, deterministic routing, fault visibility),
+- **Backend production practices** (Gunicorn, health checks, metrics endpoints),
+- **Performance mindset** (latency distribution, not just average latency).
+
+---
+
+## API
+
+### `POST /cache`
+Set cache value with optional TTL.
+
+Request:
+```json
+{
+  "key": "session:123",
+  "value": "payload",
+  "ttl_seconds": 300
+}
+```
+
+### `GET /cache/<key>`
+Get value by key.
+
+### `DELETE /cache/<key>`
+Delete key.
+
+### `GET /health`
+Shard-level health and ping latency.
+
+### `GET /stats`
+Shard-level cache stats including keyspace hits/misses and memory usage.
+
+---
+
+## Run locally
+
 ```bash
-git clone https://github.com/asogani23/Distributed-Caching-System.git
-cd Distributed-Caching-System
-Ensure Docker is Installed
-Install Docker and Docker Compose: Docker Installation Guide
-Build and Start Containers
-bash
-Copy code
 docker-compose up --build
-This will start the Flask app on localhost:5000 and Redis on localhost:6379.
-Verify Containers are Running
-bash
-Copy code
-docker ps
-Ensure you see containers for the Flask app and Redis.
-Example curl Commands
-Set a Key-Value Pair
-bash
-Copy code
-curl -X POST -H "Content-Type: application/json" \
--d '{"key": "test", "value": "123"}' \
-http://localhost:5000/cache
-Expected Response:
+```
 
-json
-Copy code
-{"message": "Cache set successfully!"}
-Get a Value by Key
-bash
-Copy code
-curl http://localhost:5000/cache/test
-Expected Response:
+Service endpoints:
+- App: `http://localhost:5000`
+- Redis shards: `6379`, `6380`, `6381`
 
-json
-Copy code
-{"key": "test", "value": "123"}
-Test Nonexistent Key
-bash
-Copy code
-curl http://localhost:5000/cache/nonexistent
-Expected Response:
+Example:
 
-json
-Copy code
-{"error": "Key not found"}
-Performance Metrics
-Initial Average Response Time (without Redis caching): 0.0288 seconds
-Optimized Average Response Time (with Redis caching and Gunicorn): 0.0238 seconds
-Performance Improvement: 17%
-How It Was Achieved
-Gunicorn Deployment:
+```bash
+curl -X POST http://localhost:5000/cache \
+  -H "Content-Type: application/json" \
+  -d '{"key":"user:42","value":"gold","ttl_seconds":120}'
 
-Replaced Flask's development server with Gunicorn, a production-grade WSGI server, to handle high-concurrency requests.
-Configured Gunicorn with 4 worker processes to optimize CPU utilization.
-Redis Caching:
+curl http://localhost:5000/cache/user:42
+curl http://localhost:5000/health
+curl http://localhost:5000/stats
+```
 
-Integrated Redis to cache key-value pairs, reducing database query times for frequently accessed data.
-Load Testing:
+---
 
-Conducted load testing with 1,000 requests to benchmark response times before and after optimization.
-Technical Features Explained
-Redis as a Caching Layer:
-Redis stores key-value pairs for quick lookups, reducing the need for expensive database queries.
-Flask API Layer:
-Handles HTTP requests for setting and retrieving data, interacting with Redis as the backend.
-Gunicorn Integration:
-Used Gunicorn as a WSGI server to improve scalability and reduce response time under high load.
-Dockerization:
-Ensures the app and Redis run in isolated environments, removing dependencies on the host system.
-Scalability:
-The system can be scaled horizontally by increasing the number of app or Redis containers using Docker Compose.
-Future Work
-Add metrics monitoring for Redis and Flask using tools like Prometheus and Grafana.
-Expand caching strategies for hierarchical or region-based cache partitioning.
+## Load test
 
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request for review.
+```bash
+python load_test.py
+```
 
+Outputs:
+- status-code distribution,
+- latency p50/p95/p99.
 
+---
 
+## Resume-ready bullet options (ATS-friendly)
 
+- Built a **distributed cache service** with **C-based consistent hashing** (Jump Hash + FNV-1a) to deterministically route keys across 3 Redis shards, improving key distribution and minimizing remapping during scaling events.
+- Engineered a **low-latency caching API** (Flask + Gunicorn + Redis) with TTL support, delete semantics, and operational `/health` + `/stats` endpoints for shard-level observability.
+- Containerized a multi-node cache stack with Docker Compose and stress-tested with 2,000 concurrent mixed R/W requests, reporting p50/p95/p99 to guide performance tuning.
 
+---
+
+## Tech stack
+
+- **Languages**: C, Python
+- **Infra/Runtime**: Docker, Docker Compose, Gunicorn
+- **Data systems**: Redis
+- **Testing**: Pytest

@@ -1,15 +1,28 @@
 services:
-  redis:
-    image: redis:alpine
-    container_name: distributed_caching_system-redis-1
+  redis-1:
+    image: redis:7-alpine
     ports:
       - "6379:6379"
+
+  redis-2:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+  redis-3:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
 
   app:
     build:
       context: .
-    container_name: distributed_caching_system-app-1
+    environment:
+      - REDIS_SHARDS=redis://redis-1:6379/0,redis://redis-2:6379/0,redis://redis-3:6379/0
+      - HASH_LIB_PATH=/app/libhashring.so
     ports:
       - "5000:5000"
     depends_on:
-      - redis
+      - redis-1
+      - redis-2
+      - redis-3
