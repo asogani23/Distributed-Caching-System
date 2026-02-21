@@ -84,7 +84,7 @@ Outputs:
 
 ---
 
-## Resume-ready bullet options (ATS-friendly)
+## Summary
 
 - Built a **distributed cache service** with **C-based consistent hashing** (Jump Hash + FNV-1a) to deterministically route keys across 3 Redis shards, improving key distribution and minimizing remapping during scaling events.
 - Engineered a **low-latency caching API** (Flask + Gunicorn + Redis) with TTL support, delete semantics, and operational `/health` + `/stats` endpoints for shard-level observability.
